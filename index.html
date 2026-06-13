@@ -3,208 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>부산 로컬 관광지도 - 맛집, 카페, 핫플레이스</title>
+    <title>부산 스페셜티 커피 가이드 200 - 커피 전문가용 가이드</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Leaflet Map CSS -->
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
-    <!-- Custom Style CSS -->
+    <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="app-container">
-        <!-- Interactive Map Element -->
+        <!-- Leaflet Map Container -->
         <div id="map"></div>
 
-        <!-- Float UI Controls Overlay -->
+        <!-- Float UI Overlay -->
         <div class="ui-overlay">
             
-            <!-- App Header Panel -->
+            <!-- App Header -->
             <header class="app-header interactive">
                 <div class="brand">
-                    <i class="fa-solid fa-anchor brand-icon"></i>
+                    <i class="fa-solid fa-mug-hot brand-icon"></i>
                     <div>
-                        <h1>부산 로컬 맵</h1>
-                        <span>Busan Spot Map</span>
+                        <h1>BUSAN COFFEE 200</h1>
+                        <span>Specialty Explorer</span>
                     </div>
                 </div>
-                <div class="header-actions">
+                <div>
                     <button id="theme-toggle-btn" class="btn-icon" title="테마 변경">
                         <i class="fa-solid fa-sun"></i>
                     </button>
                 </div>
             </header>
 
-            <!-- Top Filter Buttons Panel -->
+            <!-- Top bar category filters and search -->
             <div class="topbar">
-                <div class="filters-wrapper interactive">
+                <div class="filters-scroll interactive">
                     <button class="filter-btn active" data-category="all">
-                        <i class="fa-solid fa-globe"></i>전체
+                        <i class="fa-solid fa-mug-saucer"></i>전체 테마
                     </button>
-                    <button class="filter-btn" data-category="hotspot">
-                        <i class="fa-solid fa-camera" style="color: var(--color-hotspot)"></i>핫플레이스
+                    <button class="filter-btn" data-category="roastery">
+                        <i class="fa-solid fa-fire" style="color: var(--color-roastery)"></i>로스터리
                     </button>
-                    <button class="filter-btn" data-category="cafe">
-                        <i class="fa-solid fa-coffee" style="color: var(--color-cafe)"></i>카페
+                    <button class="filter-btn" data-category="espresso">
+                        <i class="fa-solid fa-mug-hot" style="color: var(--color-espresso)"></i>에스프레소 바
                     </button>
-                    <button class="filter-btn" data-category="korean">
-                        <i class="fa-solid fa-utensils" style="color: var(--color-korean)"></i>한식
+                    <button class="filter-btn" data-category="handdrip">
+                        <i class="fa-solid fa-filter" style="color: var(--color-handdrip)"></i>필터/드립
                     </button>
-                    <button class="filter-btn" data-category="chinese">
-                        <i class="fa-solid fa-bowl-food" style="color: var(--color-chinese)"></i>중식
+                    <button class="filter-btn" data-category="ocean">
+                        <i class="fa-solid fa-water" style="color: var(--color-ocean)"></i>오션뷰
                     </button>
-                    <button class="filter-btn" data-category="western">
-                        <i class="fa-solid fa-circle-chevron-right" style="color: var(--color-western)"></i>양식
+                    <button class="filter-btn" data-category="vintage">
+                        <i class="fa-solid fa-house" style="color: var(--color-vintage)"></i>빈티지/주택
                     </button>
-                    <button class="filter-btn" data-category="others">
-                        <i class="fa-solid fa-star" style="color: var(--color-others)"></i>그 외
+                    <button class="filter-btn" data-category="bakery">
+                        <i class="fa-solid fa-bread-slice" style="color: var(--color-bakery)"></i>대형 베이커리
                     </button>
                 </div>
 
-                <div class="search-widget interactive">
+                <div class="search-container interactive">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="search-input" placeholder="이름, 주소, 태그 검색...">
+                    <input type="text" id="search-input" placeholder="이름, 원두노트, 머신모델 검색...">
                 </div>
             </div>
 
-            <!-- Left Interactive Sidebar -->
+            <!-- Left Navigation Sidebar -->
             <aside class="sidebar interactive">
                 
-                <!-- Weather info banner -->
-                <div id="weather-widget-container" style="padding: 1.25rem 1.25rem 0 1.25rem;"></div>
+                <!-- Dynamic Coffee statistics widget -->
+                <div id="stats-widget-container" style="padding: 1.25rem 1.25rem 0 1.25rem;"></div>
 
-                <!-- Navigation Tabs -->
+                <!-- Tabs header -->
                 <div class="sidebar-tabs">
-                    <button class="tab-btn active" data-tab="spots">
-                        <i class="fa-solid fa-list"></i>관광지 목록
+                    <button class="tab-btn active" data-tab="districts">
+                        <i class="fa-solid fa-map"></i>구군별 탐색
                     </button>
-                    <button class="tab-btn" data-tab="courses">
-                        <i class="fa-solid fa-route"></i>추천 코스
+                    <button class="tab-btn" data-tab="cafes">
+                        <i class="fa-solid fa-list-ul"></i><span>전체 목록 (200)</span>
                     </button>
                     <button class="tab-btn" data-tab="bookmarks">
-                        <i class="fa-solid fa-heart"></i>나만의 저장
+                        <i class="fa-solid fa-bookmark"></i>나의 찜
+                    </button>
+                    <button class="tab-btn" data-tab="journal">
+                        <i class="fa-solid fa-book-open"></i>바리스타 저널
                     </button>
                 </div>
 
-                <!-- Tab 1: Spot Card list -->
-                <div id="tab-spots" class="tab-content active">
-                    <div id="spots-list">
-                        <!-- Filled dynamically by JavaScript -->
+                <!-- Tab 1: District Grid Selector -->
+                <div id="tab-districts" class="tab-content active">
+                    <div id="district-grid" class="district-grid">
+                        <!-- Loaded dynamically -->
                     </div>
                 </div>
 
-                <!-- Tab 2: Travel Courses list -->
-                <div id="tab-courses" class="tab-content">
-                    <div id="courses-list" class="course-list">
-                        <!-- Filled dynamically by JavaScript -->
+                <!-- Tab 2: All Cafes List with Tasting Sliders -->
+                <div id="tab-cafes" class="tab-content">
+                    
+                    <!-- Tasting Sliders Filter Section -->
+                    <div class="slider-group" style="margin-bottom: 0.5rem;">
+                        <span style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">프로파일 맛 분석 필터</span>
+                        
+                        <label>
+                            <span>산미 레벨 (Acidity)</span>
+                            <span style="color: var(--accent); font-weight:800;"><span id="lbl-acidity">1</span> 이상</span>
+                        </label>
+                        <input type="range" id="slider-acidity" min="1" max="5" value="1" class="range-slider">
+
+                        <label style="margin-top: 0.4rem;">
+                            <span>고소함 레벨 (Nutty/Roasty)</span>
+                            <span style="color: var(--accent); font-weight:800;"><span id="lbl-nutty">1</span> 이상</span>
+                        </label>
+                        <input type="range" id="slider-nutty" min="1" max="5" value="1" class="range-slider">
+
+                        <label style="margin-top: 0.4rem;">
+                            <span>바디감 레벨 (Body)</span>
+                            <span style="color: var(--accent); font-weight:800;"><span id="lbl-body">1</span> 이상</span>
+                        </label>
+                        <input type="range" id="slider-body" min="1" max="5" value="1" class="range-slider">
+                    </div>
+
+                    <div id="cafes-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <!-- Filled dynamically -->
                     </div>
                 </div>
 
-                <!-- Tab 3: Favorite Bookmarks list -->
+                <!-- Tab 3: Saved Bookmarks -->
                 <div id="tab-bookmarks" class="tab-content">
-                    <div id="bookmarks-list">
-                        <!-- Filled dynamically by JavaScript -->
+                    <div id="bookmarks-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <!-- Tab 4: Barista Review Journals -->
+                <div id="tab-journal" class="tab-content">
+                    <div id="journal-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <!-- Filled dynamically -->
                     </div>
                 </div>
 
             </aside>
 
-            <!-- Detailed Sliding Information Card Pane -->
+            <!-- Detailed Coffee shop Card Slide -->
             <div id="detail-panel" class="detail-panel">
-                <div class="detail-header">
-                    <img id="detail-image" class="detail-img" src="" alt="">
+                
+                <div class="detail-header-section">
                     <button id="detail-close-btn" class="detail-close" title="닫기">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <div class="detail-header-overlay">
-                        <div class="detail-title-wrap">
-                            <span id="detail-category" class="card-category">카테고리</span>
-                            <h2 id="detail-title" style="margin-top: 0.5rem">관광지명</h2>
-                        </div>
+                    <div style="margin-top: 0.5rem">
+                        <span id="detail-category" class="card-badge">에스프레소 바</span>
+                        <h2 id="detail-title" style="font-family: 'Playfair Display', serif; font-size:1.4rem; margin-top:0.4rem; font-weight:700;">카페명</h2>
                     </div>
                 </div>
 
                 <div class="detail-body">
-                    <div class="detail-info-row" id="detail-address">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <div class="detail-info-content">
-                            <h4>위치</h4>
-                            <p>주소</p>
+                    
+                    <!-- Taste analysis -->
+                    <div>
+                        <div class="section-title">테이스팅 노트 분석</div>
+                        <div class="profile-row">
+                            <span class="profile-label">산미 (Acidity)</span>
+                            <div class="profile-track">
+                                <div id="fill-acidity" class="profile-fill" style="width: 0%;"></div>
+                            </div>
+                            <span id="val-acidity" style="font-weight:700; width:20px; text-align:right; font-size:0.85rem;">0</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="profile-label">고소함 (Nutty)</span>
+                            <div class="profile-track">
+                                <div id="fill-nutty" class="profile-fill" style="width: 0%;"></div>
+                            </div>
+                            <span id="val-nutty" style="font-weight:700; width:20px; text-align:right; font-size:0.85rem;">0</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="profile-label">단맛 (Sweetness)</span>
+                            <div class="profile-track">
+                                <div id="fill-sweet" class="profile-fill" style="width: 0%;"></div>
+                            </div>
+                            <span id="val-sweet" style="font-weight:700; width:20px; text-align:right; font-size:0.85rem;">0</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="profile-label">바디감 (Body)</span>
+                            <div class="profile-track">
+                                <div id="fill-body" class="profile-fill" style="width: 0%;"></div>
+                            </div>
+                            <span id="val-body" style="font-weight:700; width:20px; text-align:right; font-size:0.85rem;">0</span>
                         </div>
                     </div>
 
-                    <div class="detail-info-row" id="detail-phone">
-                        <i class="fa-solid fa-phone"></i>
-                        <div class="detail-info-content">
-                            <h4>전화번호</h4>
-                            <p>전화번호</p>
+                    <!-- Extraction Gear Specs -->
+                    <div>
+                        <div class="section-title">에스프레소 추출 스펙</div>
+                        <div class="gear-grid">
+                            <div class="gear-box">
+                                <div class="gear-label">추출 머신</div>
+                                <div id="val-machine" class="gear-value">-</div>
+                            </div>
+                            <div class="gear-box">
+                                <div class="gear-label">그라인더</div>
+                                <div id="val-grinder" class="gear-value">-</div>
+                            </div>
+                            <div class="gear-box" style="grid-column: span 2;">
+                                <div class="gear-label">원두 로스팅 스타일</div>
+                                <div id="val-roast" class="gear-value">-</div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="detail-info-row" id="detail-hours">
-                        <i class="fa-solid fa-clock"></i>
-                        <div class="detail-info-content">
-                            <h4>영업시간</h4>
-                            <p>영업시간</p>
+                    <!-- Bean Lineup -->
+                    <div>
+                        <div class="section-title">오늘의 스페셜티 원두 라인업</div>
+                        <div id="detail-bean-lineup">
+                            <!-- Filled dynamically -->
                         </div>
                     </div>
 
-                    <div class="detail-info-row" id="detail-menu">
-                        <i class="fa-solid fa-utensils"></i>
-                        <div class="detail-info-content">
-                            <h4>시그니처 / 가격</h4>
-                            <p>대표 메뉴</p>
+                    <!-- Menu List -->
+                    <div>
+                        <div class="section-title">커피 메뉴 및 가격</div>
+                        <div id="detail-menu-list" class="menu-list">
+                            <!-- Filled dynamically -->
                         </div>
                     </div>
 
-                    <p id="detail-description" class="detail-desc">설명</p>
+                    <!-- Expert notes -->
+                    <div>
+                        <div class="section-title">커피 전문가 프로파일 평평</div>
+                        <p id="detail-notes" style="font-size:0.85rem; line-height:1.5; color:var(--text-secondary); background:var(--accent-light); padding:0.85rem; border-radius:10px; border:1px solid var(--border-color)">-</p>
+                    </div>
 
-                    <!-- Interactive Actions -->
-                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">길찾기 & 지도 연동</h4>
-                        <div class="action-links">
-                            <a id="link-naver" target="_blank" class="btn-route naver">
-                                <i class="fa-solid fa-location-arrow" style="font-size: 1rem"></i> 네이버 지도
-                            </a>
-                            <a id="link-kakao" target="_blank" class="btn-route kakao">
-                                <i class="fa-solid fa-map-pin" style="font-size: 1rem"></i> 카카오 맵
-                            </a>
-                            <a id="link-google" target="_blank" class="btn-route google">
-                                <i class="fa-solid fa-compass" style="font-size: 1rem"></i> 구글 지도
-                            </a>
+                    <!-- Cupping notes logs -->
+                    <div>
+                        <div class="section-title">나만의 커핑 노트 기록</div>
+                        <div class="cupping-notes-container">
+                            <textarea id="cupping-note-input" class="cupping-input" placeholder="방문 후 느낀 점, 추출 상태, 커핑 아로마 노트를 여기에 기록하세요..."></textarea>
+                            <button id="btn-save-cupping" class="btn-icon interactive" style="width:100%; height:36px; border-radius:8px; gap:0.4rem; display:flex;">
+                                <i class="fa-solid fa-save"></i>
+                                <span style="font-size:0.8rem; font-weight:700;">커핑 노트 저장</span>
+                            </button>
                         </div>
                     </div>
 
-                    <div style="margin-top: auto; padding-top: 1rem;">
-                        <button id="detail-bookmark" class="btn-icon interactive" style="width:100%; height:46px; border-radius:12px; gap:0.5rem; display:flex;" title="나의 저장목록에 추가">
-                            <i class="fa-regular fa-heart"></i>
-                            <span style="font-weight: 600; font-size: 0.9rem">이 관광지 찜하기</span>
+                    <!-- Address, phone, time -->
+                    <div>
+                        <div class="section-title">매장 상세 정보</div>
+                        <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.82rem; color:var(--text-secondary);">
+                            <div id="detail-address">주소</div>
+                            <div id="detail-phone">전화번호</div>
+                            <div id="detail-hours">영업시간</div>
+                        </div>
+                    </div>
+
+                    <!-- Location navigation -->
+                    <div>
+                        <div class="section-title">길찾기 연결</div>
+                        <div class="directions-grid">
+                            <a id="link-naver" target="_blank" class="btn-direction naver">네이버 지도</a>
+                            <a id="link-kakao" target="_blank" class="btn-direction kakao">카카오 맵</a>
+                            <a id="link-google" target="_blank" class="btn-direction google">구글 지도</a>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:0.5rem;">
+                        <button id="detail-bookmark-btn" class="btn-icon interactive" style="width:100%; height:46px; border-radius:12px; gap:0.5rem; display:flex;" title="나의 저장목록에 추가">
+                            <i class="fa-regular fa-bookmark"></i> 북마크 등록
                         </button>
                     </div>
+
                 </div>
             </div>
-
-            <!-- GPS User Locate Button -->
-            <button id="gps-btn" class="gps-btn interactive" title="내 위치 찾기">
-                <i class="fa-solid fa-location-crosshairs" style="font-size: 1.25rem"></i>
-            </button>
 
         </div>
     </div>
 
-    <!-- Leaflet Map JS -->
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
-    <!-- Custom Application Logic JS -->
+    <!-- Curated Database -->
+    <script src="cafes_data.js"></script>
+    
+    <!-- Application Logic -->
     <script src="app.js"></script>
 </body>
 </html>
